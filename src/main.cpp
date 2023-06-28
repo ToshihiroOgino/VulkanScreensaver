@@ -5,7 +5,7 @@
 int main() {
   Screensaver app;
 
-  // TODO https://vulkan-tutorial.com/Loading_models
+  // TODO https://vulkan-tutorial.com/Compute_Shader
 
   try {
     app.run();
