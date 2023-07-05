@@ -1,5 +1,5 @@
-#ifndef SCREENSAVER_CPP_
-#define SCREENSAVER_CPP_
+#ifndef SCREENSAVER_H_
+#define SCREENSAVER_H_
 #pragma once
 
 #define GLFW_INCLUDE_VULKAN
@@ -26,6 +26,8 @@ const uint32_t HEIGHT = 600;
 
 const std::string MODEL_PATH = "models/viking_room.obj";
 const std::string TEXTURE_PATH = "textures/viking_room.png";
+// const std::string MODEL_PATH = "models/Chest.obj";
+// const std::string TEXTURE_PATH = "textures/white.jpg";
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
@@ -203,14 +205,13 @@ private:
   void createTextureImage();
   void createTextureImageView();
   void createTextureSampler();
-  void loadModel();
+  void loadModel(glm::vec3 origin);
   void createVertexBuffer();
   void createIndexBuffer();
   void createUniformBuffers();
   void createDescriptorPool();
   void createDescriptorSets();
   void createCommandBuffers();
-  void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
   void createSyncObjects();
   void drawFrame();
 #pragma endregion
@@ -227,6 +228,7 @@ private:
   VkFormat findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
   VkFormat findDepthFormat();
   bool hasStencilComponent(VkFormat format);
+  void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
   VkCommandBuffer beginSingleTimeCommands();
   void endSingleTimeCommands(VkCommandBuffer commandBuffer);
   void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer &buffer, VkDeviceMemory &bufferMemory);
@@ -276,4 +278,4 @@ private:
 #pragma endregion
 };
 
-#endif
+#endif /* SCREENSAVER_H_ */

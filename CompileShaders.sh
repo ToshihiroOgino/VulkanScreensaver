@@ -1,5 +1,11 @@
 #!/bin/bash
 echo 'Compiling shaders'
-glslc ./shaders/shader.vert -o ./shaders/vert.spv
-glslc ./shaders/shader.frag -o ./shaders/frag.spv
+cd ./shaders
+files="./*"
+spv=.spv
+rm ./*.spv
+for file in $files; do
+    echo Compiling $file ...
+    glslc $file -o $file$spv
+done
 echo 'Shaders was compiled.'
