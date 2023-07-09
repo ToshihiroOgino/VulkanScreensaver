@@ -37,6 +37,7 @@ private:
   uint32_t init(uint32_t beginIdx);
   void createNode(uint32_t *beginIdx, Screensaver::Node *target);
   std::tuple<float, glm::vec3, glm::vec3, glm::vec3> createState(uint32_t *beginIdx);
+  void loadCameraValues(uint32_t *beginIdx);
   float getNum(uint32_t *beginIdx);
   glm::vec3 getVec3(uint32_t *beginIdx);
 };

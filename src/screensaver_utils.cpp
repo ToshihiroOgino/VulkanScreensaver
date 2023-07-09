@@ -480,12 +480,12 @@ void Screensaver::updateUniformBuffer(uint32_t currentImage) {
   auto currentTime = std::chrono::high_resolution_clock::now();
   float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
-  time = 0;
-
   UniformBufferObject ubo{};
-  ubo.view = glm::lookAt(glm::vec3(0.0f, 5.0f, 4.25f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-  ubo.view = glm::rotate(ubo.view, time * glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-  ubo.proj = glm::perspective(glm::radians(45.0f), swapChainExtent.width / (float)swapChainExtent.height, 0.1f, 100.0f);
+  ubo.view = glm::lookAt(this->cameraPosition, this->lookAt, glm::vec3(0.0f, 0.0f, 1.0f));
+  ubo.view = glm::rotate(ubo.view, time * glm::radians(this->angularVelocity.x), glm::vec3(1, 0, 0));
+  ubo.view = glm::rotate(ubo.view, time * glm::radians(this->angularVelocity.y), glm::vec3(0, 1, 0));
+  ubo.view = glm::rotate(ubo.view, time * glm::radians(this->angularVelocity.z), glm::vec3(0, 0, 1));
+  ubo.proj = glm::perspective(glm::radians(this->fovY), swapChainExtent.width / (float)swapChainExtent.height, 0.1f, 100.0f);
   ubo.proj[1][1] *= -1;
 
   memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));

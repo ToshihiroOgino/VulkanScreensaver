@@ -16,8 +16,11 @@ void Parser::apply(Screensaver *pApp) {
   this->pApp = pApp;
   uint32_t idx = 0;
   while (idx < tokens.size()) {
-    if (tokens.at(idx).second == "node") {
+    string str = tokens.at(idx).second;
+    if (str == "node") {
       createNode(&idx, pApp->rootNode);
+    } else if (str == "camera") {
+      loadCameraValues(&idx);
     } else {
       idx++;
     }
@@ -86,6 +89,33 @@ std::tuple<float, glm::vec3, glm::vec3, glm::vec3> Parser::createState(uint32_t 
   return std::make_tuple(time, pos, rot, scale);
 }
 
+void Parser::loadCameraValues(uint32_t *beginIdx) {
+  uint32_t idx = *beginIdx + 2;
+  while (tokens.at(idx).second != "}") {
+    string str = tokens.at(idx).second;
+    if (str == "fov") {
+      idx += 2;
+      pApp->fovY = getNum(&idx);
+      idx++;
+    } else {
+      // それ以外の場合にはvec3を読む
+      idx += 2;
+      auto vec = getVec3(&idx);
+      // )と;を飛ばして次のStrへ行く
+      idx += 2;
+      if (str == "position") {
+        pApp->cameraPosition = vec;
+      } else if (str == "lookAt") {
+        pApp->lookAt = vec;
+      } else if (str == "angularVelocity") {
+        pApp->angularVelocity = vec;
+      }
+    }
+  }
+  // };を飛ばす
+  *beginIdx = idx + 2;
+}
+
 float Parser::getNum(uint32_t *beginIdx) {
   bool minus = false;
   uint32_t idx = *beginIdx;
@@ -129,10 +159,7 @@ TokenType Parser::checkType(int idx) {
       ch == '{' || ch == '}') {
     return TokenType::Bracket;
   }
-  if (ch == '+' ||
-      ch == '-' ||
-      ch == '*' ||
-      ch == '/' ||
+  if (ch == '-' ||
       ch == '=' ||
       ch == ';') {
     return TokenType::Ope;
@@ -140,7 +167,7 @@ TokenType Parser::checkType(int idx) {
   if (('0' <= ch && ch <= '9') || ch == '.') {
     return TokenType::Num;
   }
-  if (('A' <= ch && ch <= 'z') || ch == '_') {
+  if (('A' <= ch && ch <= 'z') || ch == '_' || ch == '/') {
     return TokenType::Str;
   }
   return TokenType::None;

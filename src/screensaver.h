@@ -174,6 +174,12 @@ public:
 
   Node *rootNode;
   uint32_t numOfTextures = 0;
+
+  glm::vec3 cameraPosition = glm::vec3(5, 5, 5);
+  glm::vec3 lookAt = glm::vec3(0, 0, 0);
+  glm::vec3 angularVelocity = glm::vec3(0, 0, 0);
+  float fovY = 60.0f;
+
   void run();
   Screensaver() {
     rootNode = new Node(this);
