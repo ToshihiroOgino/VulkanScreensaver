@@ -124,6 +124,7 @@ public:
 
     uint32_t currentState = 0;
     float cycle = 0;
+    std::vector<float> timeline;
     // vector<time, pos, rot, scale>
     std::vector<std::tuple<float, glm::vec3, glm::vec3, glm::vec3>> states;
 

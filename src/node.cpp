@@ -15,26 +15,16 @@ Screensaver::Node *Screensaver::Node::addChild() {
 
 void Screensaver::Node::init() {
   states = std::vector<std::tuple<float, glm::vec3, glm::vec3, glm::vec3>>(0);
-  // glm::vec3 position = glm::vec3(0, 0, 0);
-  // glm::vec3 rotationDegrees = glm::vec3(0, 0, 0);
-  // glm::vec3 scale = glm::vec3(1, 1, 1);
-  // states.push_back(std::make_tuple(0, position, rotationDegrees, scale));
+  timeline = std::vector<float>{0};
 }
 
 void Screensaver::Node::addState(std::tuple<float, glm::vec3, glm::vec3, glm::vec3> state) {
   float time = std::get<0>(state);
-  if (states.empty()) {
-    time = 0;
-  } else {
-    if (time < 0.01) {
-      time = 0.01;
-    }
-    time = time + cycle;
-  }
   glm::vec3 position = std::get<1>(state);
   glm::vec3 rotationDegrees = std::get<2>(state);
   glm::vec3 scale = std::get<3>(state);
   cycle += time;
+  timeline.push_back(cycle);
   states.push_back(std::make_tuple(time, position, rotationDegrees, scale));
 }
 
@@ -66,15 +56,15 @@ void Screensaver::Node::render(VkCommandBuffer commandBuffer, glm::mat4 transfor
     rot = std::get<2>(states.at(currentState));
     scale = std::get<3>(states.at(currentState));
     if (states.size() > 1) {
-      float t1, t2;
       glm::vec3 p2, r2, s2;
-      t1 = std::get<0>(states.at(currentState));
-      t2 = std::get<0>(states.at(nextState));
+      // float t1 = std::get<0>(states.at(currentState));
+      float t2 = std::get<0>(states.at(nextState));
       p2 = std::get<1>(states.at(nextState));
       r2 = std::get<2>(states.at(nextState));
       s2 = std::get<3>(states.at(nextState));
 
-      float progress = std::abs((time - t1) / (t2 - t1));
+      float progress = std::abs((time - timeline.at(currentState)) / (t2));
+      // float progress = std::abs((time - t1) / (t2));
       pos += ((p2 - pos) * progress);
       rot += +((r2 - rot) * progress);
       scale += +((s2 - scale) * progress);
