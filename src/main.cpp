@@ -1,12 +1,17 @@
+// 参考
+// https://vulkan-tutorial.com/
+// https://www.youtube.com/watch?v=8AXTNMMWBGg
+
+#include "parser.h"
 #include "screensaver.h"
 
 #include <iostream>
 
 int main() {
-  Screensaver app;
-
-  // TODO https://vulkan-tutorial.com/Compute_Shader
-
+  Parser parser;
+  parser.parse("./scripts/sample.txt");
+  Screensaver app = Screensaver();
+  parser.apply(&app);
   try {
     app.run();
   } catch (const std::exception &e) {

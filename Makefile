@@ -7,7 +7,7 @@ SRCDIR		= ./src
 OBJDIR    	= ./obj
 BINDIR		= ./bin
 SUBMODULE	= ./external
-INCLUDE   	= -I$(SUBMODULE)/glm -I$(SUBMODULE)/stb -I$(SUBMODULE)/glfw/include -I$(SUBMODULE)/tinyobjloader
+INCLUDE   	= -I$(SUBMODULE)/glm -I$(SUBMODULE)/stb -I$(SUBMODULE)/glfw/include -I$(SUBMODULE)/tinyobjloader -I$(SUBMODULE)/Vulkan-Headers/include
 
 $(shell mkdir -p $(OBJDIR))
 $(shell mkdir -p $(BINDIR))

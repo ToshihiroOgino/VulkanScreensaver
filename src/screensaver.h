@@ -1,16 +1,14 @@
-#ifndef SCREENSAVER_H_
-#define SCREENSAVER_H_
 #pragma once
 
 #define GLFW_INCLUDE_VULKAN
-#define GLM_ENABLE_EXPERIMENTAL
 #include <GLFW/glfw3.h>
+
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtx/hash.hpp>
 
 #include <array>
 #include <cstdint>
-#include <fstream>
 #include <iostream>
 #include <optional>
 #include <vector>
@@ -23,11 +21,6 @@ const bool enableValidationLayers = true;
 
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
-
-const std::string MODEL_PATH = "models/viking_room.obj";
-const std::string TEXTURE_PATH = "textures/viking_room.png";
-// const std::string MODEL_PATH = "models/Chest.obj";
-// const std::string TEXTURE_PATH = "textures/white.jpg";
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
@@ -106,7 +99,6 @@ struct hash<Vertex> {
 } // namespace std
 
 struct UniformBufferObject {
-  alignas(16) glm::mat4 model;
   alignas(16) glm::mat4 view;
   alignas(16) glm::mat4 proj;
 };
@@ -114,10 +106,83 @@ struct UniformBufferObject {
 
 class Screensaver {
 public:
+  struct Node {
+  public:
+    Screensaver *pApp = nullptr;
+
+    bool isContainTexture = false;
+    bool isContainModel = false;
+
+    std::string texturePath = "";
+    std::string modelPath = "";
+
+    std::vector<Node *> children;
+
+    // glm::vec3 position = glm::vec3(0, 0, 0);
+    // glm::vec3 rotationDegrees = glm::vec3(0, 0, 0);
+    // glm::vec3 scale = glm::vec3(1, 1, 1);
+
+    uint32_t currentState = 0;
+    float cycle = 0;
+    // vector<time, pos, rot, scale>
+    std::vector<std::tuple<float, glm::vec3, glm::vec3, glm::vec3>> states;
+
+    struct Texture {
+      VkImage image;
+      VkDeviceMemory memory;
+      VkImageLayout layout;
+      VkImageView view;
+      uint32_t texWidth, texHeight;
+      uint32_t mipLevels;
+      VkSampler sampler;
+
+      VkDescriptorSet descriptorSet;
+    } texture;
+
+    struct Model {
+      std::vector<Vertex> vertices;
+      std::vector<uint32_t> indices;
+      VkBuffer vertexBuffer;
+      VkDeviceMemory vertexBufferMemory;
+      VkBuffer indexBuffer;
+      VkDeviceMemory indexBufferMemory;
+    } model;
+
+    Node() { init(); }
+    Node(Screensaver *pApp) {
+      this->pApp = pApp;
+      init();
+    }
+
+    // 追加したノードのポインタを返す
+    Node *addChild();
+    void addState(std::tuple<float, glm::vec3, glm::vec3, glm::vec3> state);
+
+    void assignResourcePath(std::string &texturePath, std::string &modelPath);
+
+    void render(VkCommandBuffer commandBuffer, glm::mat4 transform);
+    void loadTexture();
+    void loadModel();
+
+    void destroyTexture();
+    void destroyModel();
+
+  private:
+    void init();
+  };
+
+  Node *rootNode;
+  uint32_t numOfTextures = 0;
   void run();
+  Screensaver() {
+    rootNode = new Node(this);
+    // std::string roomTexture = "textures/checkerboard.jpg", roomModel = "models/cube_room.obj";
+    // rootNode->assignResourcePath(roomTexture, roomModel);
+  }
 
 private:
 #pragma region members
+
   GLFWwindow *window;
 
   VkInstance instance;
@@ -139,7 +204,8 @@ private:
   std::vector<VkFramebuffer> swapChainFramebuffers;
 
   VkRenderPass renderPass;
-  VkDescriptorSetLayout descriptorSetLayout;
+  VkDescriptorSetLayout uniformDescriptorSetLayout;
+  VkDescriptorSetLayout textureDescriptorSetLayout;
   VkPipelineLayout pipelineLayout;
   VkPipeline graphicsPipeline;
 
@@ -149,22 +215,9 @@ private:
   VkDeviceMemory depthImageMemory;
   VkImageView depthImageView;
 
-  uint32_t mipLevels;
-  VkImage textureImage;
-  VkDeviceMemory textureImageMemory;
-  VkImageView textureImageView;
-  VkSampler textureSampler;
-
   VkImage colorImage;
   VkDeviceMemory colorImageMemory;
   VkImageView colorImageView;
-
-  std::vector<Vertex> vertices;
-  std::vector<uint32_t> indices;
-  VkBuffer vertexBuffer;
-  VkDeviceMemory vertexBufferMemory;
-  VkBuffer indexBuffer;
-  VkDeviceMemory indexBufferMemory;
 
   std::vector<VkBuffer> uniformBuffers;
   std::vector<VkDeviceMemory> uniformBuffersMemory;
@@ -202,16 +255,11 @@ private:
   void createCommandPool();
   void createColorResources();
   void createDepthResources();
-  void createTextureImage();
-  void createTextureImageView();
-  void createTextureSampler();
-  void loadModel(glm::vec3 origin);
-  void createVertexBuffer();
-  void createIndexBuffer();
   void createUniformBuffers();
   void createDescriptorPool();
   void createDescriptorSets();
   void createCommandBuffers();
+  void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
   void createSyncObjects();
   void drawFrame();
 #pragma endregion
@@ -228,7 +276,6 @@ private:
   VkFormat findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
   VkFormat findDepthFormat();
   bool hasStencilComponent(VkFormat format);
-  void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
   VkCommandBuffer beginSingleTimeCommands();
   void endSingleTimeCommands(VkCommandBuffer commandBuffer);
   void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer &buffer, VkDeviceMemory &bufferMemory);
@@ -248,7 +295,7 @@ private:
   bool checkValidationLayerSupport();
 #pragma endregion
 
-#pragma region inline
+#pragma region static
   static void framebufferResizeCallback(GLFWwindow *window, int width, int height) {
     auto app = reinterpret_cast<Screensaver *>(glfwGetWindowUserPointer(window));
     app->framebufferResized = true;
@@ -258,24 +305,5 @@ private:
 
     return VK_FALSE;
   }
-  static std::vector<char> readFile(const std::string &filename) {
-    std::ifstream file(filename, std::ios::ate | std::ios::binary);
-
-    if (!file.is_open()) {
-      throw std::runtime_error("failed to open file!");
-    }
-
-    size_t fileSize = (size_t)file.tellg();
-    std::vector<char> buffer(fileSize);
-
-    file.seekg(0);
-    file.read(buffer.data(), fileSize);
-
-    file.close();
-
-    return buffer;
-  }
 #pragma endregion
 };
-
-#endif /* SCREENSAVER_H_ */

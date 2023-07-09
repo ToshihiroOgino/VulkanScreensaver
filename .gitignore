@@ -2,6 +2,7 @@ samples/
 
 obj/
 bin/
+buckup/
 
 *.code-workspace
 .vscode
