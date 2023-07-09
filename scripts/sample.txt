@@ -1,19 +1,16 @@
 node{
-    name="room";
     state{
         scale=(0.5,0.5,0.5);
     };
     resource=("textures/checkerboard.jpg","models/cube_room.obj");
 };
 node{
-    name="root";
     state{
         position=(0,0,0);
         scale=(1,1,1);
         rotation=(0,0,0);
     };
     node{
-        name="child1";
         resource=("textures/viking_room.png","models/viking_room.obj");
         state{
             time=1;

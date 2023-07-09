@@ -45,6 +45,8 @@ void Parser::createNode(uint32_t *beginIdx, Screensaver::Node *parentNode) {
       auto state = createState(&idx);
       stateCount++;
       pNode->addState(state);
+    } else if (str == "camera") {
+      loadCameraValues(&idx);
     } else {
       idx++;
     }
@@ -69,6 +71,8 @@ std::tuple<float, glm::vec3, glm::vec3, glm::vec3> Parser::createState(uint32_t 
       idx += 2;
       time = getNum(&idx);
       idx++;
+    } else if (str == "camera") {
+      loadCameraValues(&idx);
     } else {
       // それ以外の場合にはvec3を読む
       idx += 2;
@@ -97,6 +101,8 @@ void Parser::loadCameraValues(uint32_t *beginIdx) {
       idx += 2;
       pApp->fovY = getNum(&idx);
       idx++;
+    } else if (str == "camera") {
+      loadCameraValues(&idx);
     } else {
       // それ以外の場合にはvec3を読む
       idx += 2;

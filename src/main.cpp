@@ -1,7 +1,3 @@
-// 参考
-// https://vulkan-tutorial.com/
-// https://www.youtube.com/watch?v=8AXTNMMWBGg
-
 #include "parser.h"
 #include "screensaver.h"
 
