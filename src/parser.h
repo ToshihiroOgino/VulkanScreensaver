@@ -2,35 +2,30 @@
 
 #include <glm/glm.hpp>
 
-#include <map>
 #include <string>
 #include <vector>
 
 #include "screensaver.h"
 
-using std::string;
-using std::vector;
-
-enum TokenType {
-  None,    // 不明
-  Str,     // 文字列
-  Num,     // 数字
-  Ope,     // 演算子
-  Comma,   // カンマ
-  StrArea, // ダブルクオーテーション
-  Bracket  // カッコ
-};
-
 class Parser {
 public:
-  void parse(string file);
+  enum TokenType {
+    None,    // 不明
+    Str,     // 文字列
+    Num,     // 数字
+    Ope,     // 演算子
+    Comma,   // カンマ
+    StrArea, // ダブルクオーテーション
+    Bracket  // カッコ
+  };
+
+  void parse(std::string file);
   void apply(Screensaver *pApp);
 
 private:
   Screensaver *pApp = nullptr;
-  vector<char> code = vector<char>(0);
-  vector<std::pair<TokenType, string>> tokens = vector<std::pair<TokenType, string>>(0);
-  std::map<string, Screensaver::Node *> nodes = std::map<string, Screensaver::Node *>();
+  std::vector<char> code = std::vector<char>(0);
+  std::vector<std::pair<TokenType, std::string>> tokens;
 
   TokenType checkType(int idx);
   void tokenize();

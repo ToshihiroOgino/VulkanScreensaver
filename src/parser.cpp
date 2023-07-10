@@ -2,7 +2,7 @@
 
 #include "utils.h"
 
-void Parser::parse(string file) {
+void Parser::parse(std::string file) {
   code = readFile(file);
   tokenize();
 
@@ -16,7 +16,7 @@ void Parser::apply(Screensaver *pApp) {
   this->pApp = pApp;
   uint32_t idx = 0;
   while (idx < tokens.size()) {
-    string str = tokens.at(idx).second;
+    std::string str = tokens.at(idx).second;
     if (str == "node") {
       createNode(&idx, pApp->rootNode);
     } else if (str == "camera") {
@@ -32,11 +32,8 @@ void Parser::createNode(uint32_t *beginIdx, Screensaver::Node *parentNode) {
   uint32_t idx = *beginIdx + 2;
   uint32_t stateCount = 0;
   while (tokens.at(idx).second != "}") {
-    string str = tokens.at(idx).second;
-    if (str == "name") {
-      nodes.insert(std::make_pair(tokens.at(idx + 2).second, pNode));
-      idx += 4;
-    } else if (str == "node") {
+    std::string str = tokens.at(idx).second;
+    if (str == "node") {
       createNode(&idx, pNode);
     } else if (str == "resource") {
       pNode->assignResourcePath(tokens.at(idx + 3).second, tokens.at(idx + 5).second);
@@ -66,7 +63,7 @@ std::tuple<float, glm::vec3, glm::vec3, glm::vec3> Parser::createState(uint32_t 
   rot = glm::vec3(0, 0, 0);
   scale = glm::vec3(1, 1, 1);
   while (tokens.at(idx).second != "}") {
-    string str = tokens.at(idx).second;
+    std::string str = tokens.at(idx).second;
     if (str == "time") {
       idx += 2;
       time = getNum(&idx);
@@ -96,7 +93,7 @@ std::tuple<float, glm::vec3, glm::vec3, glm::vec3> Parser::createState(uint32_t 
 void Parser::loadCameraValues(uint32_t *beginIdx) {
   uint32_t idx = *beginIdx + 2;
   while (tokens.at(idx).second != "}") {
-    string str = tokens.at(idx).second;
+    std::string str = tokens.at(idx).second;
     if (str == "fov") {
       idx += 2;
       pApp->fovY = getNum(&idx);
@@ -153,7 +150,7 @@ glm::vec3 Parser::getVec3(uint32_t *beginIdx) {
   return result;
 }
 
-TokenType Parser::checkType(int idx) {
+Parser::TokenType Parser::checkType(int idx) {
   char ch = code.at(idx);
   if (ch == ',') {
     return TokenType::Comma;
@@ -189,7 +186,7 @@ void Parser::tokenize() {
     }
 
     if (t == TokenType::StrArea) {
-      string str = "";
+      std::string str = "";
       idx++;
       while (idx < code.size()) {
         if (checkType(idx) == TokenType::StrArea) {
@@ -205,13 +202,13 @@ void Parser::tokenize() {
     } else if (t == TokenType::Ope ||
                t == TokenType::Bracket ||
                t == TokenType::Comma) {
-      string str = "";
-      string sOpe = "";
+      std::string str = "";
+      std::string sOpe = "";
       sOpe += code.at(idx);
       tokens.push_back(std::make_pair(t, sOpe));
       idx++;
     } else {
-      string str = "";
+      std::string str = "";
       str += code.at(idx);
       idx++;
       while (idx < code.size()) {

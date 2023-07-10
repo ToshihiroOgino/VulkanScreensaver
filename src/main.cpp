@@ -3,9 +3,16 @@
 
 #include <iostream>
 
-int main() {
+int main(int argc, char *argv[]) {
   Parser parser;
-  parser.parse("./scripts/sample.txt");
+  if (argc > 1) {
+    std::string srcPath = std::string(argv[1]);
+    std::cout << "loading:" << srcPath << std::endl;
+    parser.parse(srcPath);
+  } else {
+    std::cout << "can't run without script" << std::endl;
+    return EXIT_FAILURE;
+  }
   Screensaver app = Screensaver();
   parser.apply(&app);
   try {

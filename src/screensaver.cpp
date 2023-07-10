@@ -2,9 +2,9 @@
 
 #include "utils.h"
 
-#include <cstring>
 #include <iostream>
 #include <set>
+#include <string>
 #include <unordered_map>
 
 void Screensaver::run() {

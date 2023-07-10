@@ -31,7 +31,9 @@ all: clean $(TARGET)
 clean:
 	-rm -f $(OBJECTS) $(DEPENDS) $(TARGET)
 
+SRC = ./scripts/sample
+
 run:
-	$(TARGET)
+	$(TARGET) $(SRC)
 
 -include $(DEPENDS)
