@@ -6,10 +6,10 @@ void Parser::parse(string file) {
   code = readFile(file);
   tokenize();
 
-  int n = 0;
-  for (auto p : tokens) {
-    std::cout << n++ << " : " << p.first << "=" << p.second << std::endl;
-  }
+  // int n = 0;
+  // for (auto p : tokens) {
+  //   std::cout << n++ << " : " << p.first << "=" << p.second << std::endl;
+  // }
 }
 
 void Parser::apply(Screensaver *pApp) {
@@ -136,7 +136,7 @@ float Parser::getNum(uint32_t *beginIdx) {
   if (minus) {
     result *= -1;
   }
-  std::cout << "(stof)idx:" << idx << ",val:" << result << std::endl;
+  // std::cout << "(stof)idx:" << idx << ",val:" << result << std::endl;
   idx++;
   *beginIdx = idx;
   return result;

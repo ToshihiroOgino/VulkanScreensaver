@@ -43,7 +43,7 @@ make run
 <obj> ::= <node> | <camera>
 
 <node> ::= 'node{' ( <nodeParam> | ('state{' <stateParam>* '};') | <obj>)* '};'
-<nodeParam> ::= ('time=' <number> | ('position' | 'rotation' | 'scale') '=' <vector3> )';'
+<nodeParam> ::= (('time=' <number> ) | ('resource=' <resourcePathSet> ) | ('position' | 'rotation' | 'scale') '=' <vector3> )';'
 <stateParam> ::= (('time=' <number>) | (('position' | 'rotation' | 'scale') '=' <vector3> ))';'
 
 <camera> ::= { (<cameraParam>)+ };
@@ -60,7 +60,8 @@ node内のstateはnodeの動きを定義します。
 stateは記述されているノード以下全てのノードの状態に影響します。
 time秒間かけて、次のstateに遷移します。なお、stateが1つ以下しか宣言されていない場合には状態の遷移は起こりません。
 最後のstateに到達したときの遷移先stateは一番初めのstateになります。
-resourceパラメータを定義しないことで、ノードが描画されなくなりますが、そのノード以下をstateを使って操作することは可能です。
+
+resourceパラメータを定義しないことで、ノードが描画されなくなりますが、stateを使って子ノードを操作することは可能です。
 resourceにて記述するモデルとテクスチャのパスには、実行ディレクトリからの相対パスを記述してください。
 
 カメラの設定については、一番最後に記述されたパラメータの値が扱われます。
