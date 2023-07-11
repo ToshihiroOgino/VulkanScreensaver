@@ -24,14 +24,14 @@ apt install vulkan-tools libvulkan-dev vulkan-validationlayers-dev libglm-dev li
 ```
 
 以下のコマンドから、コードのコンパイルと実行を行えます。
-`SRC=ファイル名`を追加することで、任意のスクリプトを実行できます。
+`ARG=ファイル名`を追加することで、任意のスクリプトを実行できます。
 
 ```bash
 make
 # SRCを指定しない場合は"scripts/sample"を実行する
 make run
-# "scripts/justRoom"を実行する
-make run SRC=scripts/justRoom
+# "scripts/complex"を実行する
+make run ARG=scripts/complex
 ```
 
 ## スクリーンセーバー記述言語仕様
@@ -40,14 +40,14 @@ make run SRC=scripts/justRoom
 <code> ::= (<obj>)*
 <obj> ::= <node> | <camera>
 
-<node> ::= 'node{' ( <nodeParam> | ('state{' <stateParam>* '};') | <obj>)* '};'
+<node> ::= 'node{' ( <nodeParam> | ('state{' <stateParam>* '}') | <obj>)* '}'
 <nodeParam> ::= (('time=' <number> ';' ) |
                 ('resource=' <resourcePathSet> ) |
                 ('position' | 'rotation' | 'scale') '=' <vector3> )';'
 <stateParam> ::= (('time=' <number>) |
                 (('position' | 'rotation' | 'scale') '=' <vector3> ))';'
 
-<camera> ::= 'camera{' (<cameraParam>)* '};'
+<camera> ::= 'camera{' (<cameraParam>)* '}'
 <cameraParam> ::= ( ('position' | 'lookAt' | 'angularVelocity') '=' <vector3>) | ( 'fov=' <number> ) )';'
 
 <number> ::= ('-')? (0-9)+ ('.' (0-9)+)?
@@ -58,14 +58,33 @@ make run SRC=scripts/justRoom
 - 宣言された`obj`中で記述されていない変数は既定の初期値が使用されます。
 - `state`は`node`の動きを定義します。
 - `state`は記述されているノード以下全てのノードの状態に影響します。
-- `time`秒間かけて、次の`state`に遷移します。なお、`state`が1つ以下しか宣言されていない場合には状態の遷移は起こりません。
-- 最後の`state`に到達したときの遷移先`state`は一番初めの`state`になります。
+- `time`秒間かけて、次の`state`に遷移します。
+- 最後の`state`の遷移先は最初の`state`です。
 - `resource`パラメータを定義しないことで、ノードが描画されなくなりますが、`state`を使って子ノードを操作することは可能です。
-- `resource`にて記述するモデルとテクスチャのパスには、実行ディレクトリからの相対パスを記述してください。
-- `camera`の設定や`node`のパラメータが複数定義されている場合には、一番最後に記述されたパラメータの値が扱われます。
-- 角度は全て度数法を用いて記述します。
-- 数字は符号付き32ビット浮動小数点数に変換されます。
-- 入力コード中に含まれる、空白や改行、その他の意味が未定義の文字は全て無視されます。
+- `resource`にて記述するモデルとテクスチャは、実行ディレクトリからの相対パスを利用します。
+- `camera`の設定や`node`、`state`に同一パラメータが複数定義されている場合には、最後に記述されたパラメータの値が扱われます。
+- 角度は度数法を用いて記述します。
+- 数値は符号付き32ビット浮動小数点数に変換されます。
+- 入力コード中に含まれる、空白や改行、その他の取扱いが未定義の文字は全て無視されます。
+- `scale`が負になると面の法線の向きが反転します。
+
+## パラメータ
+
+### node
+
+- resorce (文字列, 文字列) : モデルと画像のパスを指定する。
+- state : ノードの状態を定義する
+  - time (数値) : 次の状態へ遷移するのにかかる秒数
+  - position (3次元ベクトル) : ノードの座標
+  - rotation (3次元ベクトル) : ノードの回転 (度数法)
+  - scale (3次元ベクトル) : ノードの大きさ
+
+### camera
+
+- position (3次元ベクトル) : カメラの座標
+- lookAt (3次元ベクトル) : カメラが向いている座標
+- angularVelocity (3次元ベクトル) : カメラの回転速度 (度/秒, 度数法)
+- fov (数値) : カメラの垂直視野角 (度数法)
 
 ## 記述例
 
@@ -77,34 +96,34 @@ make run SRC=scripts/justRoom
 
 ```
 node{
-    state{ scale=(0.5,0.5,0.5); };
+    state{ scale=(0.5,0.5,0.5); }
     resource=("textures/checkerboard.jpg","models/cube_room.obj");
-};
+}
 node{
     resource=("textures/viking_room.png","models/viking_room.obj");
     state{
         time=1;
         position=(-1,0,0);
         rotation=(0,45,90);
-    };
+    }
     state{
         time=1;
         position=(1,0,0);
         rotation=(0,-45,90);
-    };
+    }
     node{
         resource=("textures/checkerboard.jpg","models/cube.obj");
         state{
             position=(0,0,1);
             scale=(0.1,0.1,0.1);
-        };
-    };
-};
+        }
+    }
+}
 camera{
     position=(3, 3, 3);
     lookAt=(0,0,0);
     angularVelocity=(0,0,25);
-};
+}
 ```
 
 ## 依存リポジトリ
@@ -117,7 +136,7 @@ camera{
 
 描画 : [glfw/glfw](https://github.com/glfw/glfw.git)
 
-VulkanAPI : [KhronosGroup/Vulkan-Headers](https://github.com/KhronosGroup/Vulkan-Headers)
+描画 : [KhronosGroup/Vulkan-Headers](https://github.com/KhronosGroup/Vulkan-Headers)
 
 ## 参考
 

@@ -157,6 +157,7 @@ public:
 
     // 追加したノードのポインタを返す
     Node *addChild();
+    // position, rotation, scale
     void addState(std::tuple<float, glm::vec3, glm::vec3, glm::vec3> state);
 
     void assignResourcePath(std::string &texturePath, std::string &modelPath);
@@ -183,8 +184,7 @@ public:
   void run();
   Screensaver() {
     rootNode = new Node(this);
-    // std::string roomTexture = "textures/checkerboard.jpg", roomModel = "models/cube_room.obj";
-    // rootNode->assignResourcePath(roomTexture, roomModel);
+    rootNode->addState(std::make_tuple(1, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1)));
   }
 
 private:
@@ -197,7 +197,7 @@ private:
   VkSurfaceKHR surface;
 
   VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-  VkSampleCountFlagBits msaaSamples = VK_SAMPLE_COUNT_1_BIT;
+  VkSampleCountFlagBits msaaSamples = VK_SAMPLE_COUNT_8_BIT;
   VkDevice device;
 
   VkQueue graphicsQueue;

@@ -1,0 +1,52 @@
+node{
+    resource=("textures/CarBody.png","models/CarBody.obj");
+    state{
+        time=5;
+        position=(0,-10,0);
+    }
+    state{
+        time=0;
+        position=(0,10,0);
+    }
+    node{
+        state{
+            position=(0,1.15,-0.55);
+        }
+
+        node{
+            resource=("textures/CarTire.png","models/CarTire.obj");
+            state{
+                time=1;
+                rotation=(0,0,0);
+            }
+            state{
+                time=0.001;
+                rotation=(-360,0,0);
+            }
+        }
+        node{
+            state{
+                position=(0,-2.8,0);
+            }
+            node{
+                resource=("textures/CarTire.png","models/CarTire.obj");
+                state{
+                    time=1;
+                    rotation=(0,0,0);
+                }
+                state{
+                    time=0.001;
+                    rotation=(-360,0,0);
+                }
+            }
+        }
+
+    }
+}
+
+camera{
+    position=(3, 0, 0);
+    lookAt=(0,0,0);
+    angularVelocity=(0,0,0);
+    fov=90;
+}

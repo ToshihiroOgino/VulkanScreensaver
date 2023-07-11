@@ -1,0 +1,16 @@
+node{
+    resource=("textures/checkerboard.jpg","models/cube.obj");
+    state{
+        scale=(1,1,1);
+        position=(0,0,0);
+    }
+    state{
+        scale=(1,1,1);
+        position=(2,5,0);
+    }
+}
+camera{
+    position=(2, 0, 15);
+    lookAt=(0,0,0);
+    angularVelocity=(0,0,0);
+}

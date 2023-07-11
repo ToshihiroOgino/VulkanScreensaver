@@ -1,0 +1,33 @@
+node{
+    resource=("textures/tap.png","models/tap.obj");
+    state{
+        position=(0,0,0.5);
+        scale=(0.3,0.3,0.3);
+    }
+    node{
+        resource=("textures/dropColored.png","models/drop.obj");
+        state{
+            time=0.8;
+            position=(0,0,1.5);
+            scale=(0,0,0);
+        }
+        state{
+            time=0.3;
+            scale=(1,1,0.8);
+            position=(0,0,0.1);
+        }
+        state{
+            time=1.5;
+            scale=(1,1,1);
+        }
+        state{
+            time=0;
+            position=(0,0,-30);
+        }
+    }
+}
+camera{
+    position=(2.0, 2.0, -1);
+    lookAt=(0,0,0);
+    angularVelocity=(0,0,-15);
+}

@@ -40,41 +40,50 @@ void Screensaver::Node::assignResourcePath(std::string &texturePath, std::string
 }
 
 void Screensaver::Node::render(VkCommandBuffer commandBuffer, glm::mat4 transform) {
+  static auto startTime = std::chrono::high_resolution_clock::now();
+  auto currentTime = std::chrono::high_resolution_clock::now();
+  float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+  if (cycle > 0) {
+    time = std::fmod(time, cycle);
+  } else {
+    time = 0;
+  }
+
+  int currentState = 0;
+
+  for (size_t i = states.size() - 1; i > 0; i--) {
+    if (timeline.at(i) <= time) {
+      currentState = i;
+      break;
+    }
+  }
+
+  glm::vec3 pos, rot, scale;
+  pos = std::get<1>(states.at(currentState));
+  rot = std::get<2>(states.at(currentState));
+  scale = std::get<3>(states.at(currentState));
+  if (states.size() > 1) {
+    int nextState = (currentState + 1) % states.size();
+    glm::vec3 p2, r2, s2;
+    p2 = std::get<1>(states.at(nextState));
+    r2 = std::get<2>(states.at(nextState));
+    s2 = std::get<3>(states.at(nextState));
+
+    float progress = std::abs((time - timeline.at(currentState)) / (timeline.at(currentState + 1) - timeline.at(currentState)));
+    pos += ((p2 - pos) * progress);
+    rot += ((r2 - rot) * progress);
+    scale += ((s2 - scale) * progress);
+  }
+
+  transform = glm::translate(transform, pos);
+  transform = glm::rotate(transform, glm::radians(rot.x), glm::vec3(1, 0, 0));
+  transform = glm::rotate(transform, glm::radians(rot.y), glm::vec3(0, 1, 0));
+  transform = glm::rotate(transform, glm::radians(rot.z), glm::vec3(0, 0, 1));
+  transform = glm::scale(transform, scale);
+
   if (isContainModel && isContainTexture) {
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pApp->pipelineLayout, 1, 1, &texture.descriptorSet, 0, nullptr);
 
-    static auto startTime = std::chrono::high_resolution_clock::now();
-    auto currentTime = std::chrono::high_resolution_clock::now();
-    float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
-    if (cycle > 0) {
-      time = std::fmod(time, cycle);
-    }
-    int currentState = (int)time % states.size();
-    int nextState = (currentState + 1) % states.size();
-    glm::vec3 pos, rot, scale;
-    pos = std::get<1>(states.at(currentState));
-    rot = std::get<2>(states.at(currentState));
-    scale = std::get<3>(states.at(currentState));
-    if (states.size() > 1) {
-      glm::vec3 p2, r2, s2;
-      // float t1 = std::get<0>(states.at(currentState));
-      float t2 = std::get<0>(states.at(nextState));
-      p2 = std::get<1>(states.at(nextState));
-      r2 = std::get<2>(states.at(nextState));
-      s2 = std::get<3>(states.at(nextState));
-
-      float progress = std::abs((time - timeline.at(currentState)) / (t2));
-      // float progress = std::abs((time - t1) / (t2));
-      pos += ((p2 - pos) * progress);
-      rot += +((r2 - rot) * progress);
-      scale += +((s2 - scale) * progress);
-    }
-
-    transform = glm::translate(transform, pos);
-    transform = glm::rotate(transform, glm::radians(rot.x), glm::vec3(1, 0, 0));
-    transform = glm::rotate(transform, glm::radians(rot.y), glm::vec3(0, 1, 0));
-    transform = glm::rotate(transform, glm::radians(rot.z), glm::vec3(0, 0, 1));
-    transform = glm::scale(transform, scale);
     vkCmdPushConstants(commandBuffer, pApp->pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &transform);
 
     // https://www.youtube.com/watch?v=8AXTNMMWBGg

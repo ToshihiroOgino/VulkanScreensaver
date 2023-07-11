@@ -3,8 +3,11 @@
 
 #include <iostream>
 
+#define dump(x) std::cerr << #x << " = " << (x) << "\n"
+
 int main(int argc, char *argv[]) {
   Parser parser;
+  Screensaver app = Screensaver();
   if (argc > 1) {
     std::string srcPath = std::string(argv[1]);
     std::cout << "loading:" << srcPath << std::endl;
@@ -13,8 +16,10 @@ int main(int argc, char *argv[]) {
     std::cout << "can't run without script" << std::endl;
     return EXIT_FAILURE;
   }
-  Screensaver app = Screensaver();
   parser.apply(&app);
+
+  dump(app.rootNode->children.at(0)->cycle);
+
   try {
     app.run();
   } catch (const std::exception &e) {

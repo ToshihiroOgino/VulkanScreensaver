@@ -49,10 +49,10 @@ void Parser::createNode(uint32_t *beginIdx, Screensaver::Node *parentNode) {
     }
   }
   if (stateCount == 0) {
-    pNode->addState(std::make_tuple(0, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1)));
+    pNode->addState(std::make_tuple(1, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1)));
   }
-  // };を飛ばす
-  *beginIdx = idx + 2;
+  // }を飛ばす
+  *beginIdx = idx + 1;
 }
 
 std::tuple<float, glm::vec3, glm::vec3, glm::vec3> Parser::createState(uint32_t *beginIdx) {
@@ -85,8 +85,8 @@ std::tuple<float, glm::vec3, glm::vec3, glm::vec3> Parser::createState(uint32_t 
       }
     }
   }
-  // };を飛ばす
-  *beginIdx = idx + 2;
+  // }を飛ばす
+  *beginIdx = idx + 1;
   return std::make_tuple(time, pos, rot, scale);
 }
 
@@ -115,8 +115,8 @@ void Parser::loadCameraValues(uint32_t *beginIdx) {
       }
     }
   }
-  // };を飛ばす
-  *beginIdx = idx + 2;
+  // }を飛ばす
+  *beginIdx = idx + 1;
 }
 
 float Parser::getNum(uint32_t *beginIdx) {
