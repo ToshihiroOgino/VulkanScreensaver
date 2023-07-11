@@ -28,10 +28,10 @@ apt install vulkan-tools libvulkan-dev vulkan-validationlayers-dev libglm-dev li
 
 ```bash
 make
-# SRCを指定しない場合は"scripts/sample"を実行する
+# SRCを指定しない場合は"scripts/sample.txt"を実行する
 make run
-# "scripts/complex"を実行する
-make run ARG=scripts/complex
+# "scripts/complex.txt"を実行する
+make run ARG=scripts/complex.txt
 ```
 
 ## スクリーンセーバー記述言語仕様

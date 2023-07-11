@@ -31,7 +31,7 @@ all: clean $(TARGET)
 clean:
 	-rm -f $(OBJECTS) $(DEPENDS) $(TARGET)
 
-ARG = ./scripts/sample
+ARG = ./scripts/sample.txt
 
 run:
 	$(TARGET) $(ARG)
