@@ -79,16 +79,6 @@ make run ARG=scripts/complex.txt
   - rotation (3次元ベクトル) : ノードの回転 (度数法)
   - scale (3次元ベクトル) : ノードの大きさ
 
-
-記述がない変数は場合は以下で初期化されます。
-
-- resource=("", "");
-- state
-  - time=1;
-  - position=(0, 0, 0);
-  - rotation=(0, 0, 0);
-  - scale=(1, 1, 1);
-
 ### camera
 
 - position (3次元ベクトル) : カメラの座標
@@ -96,7 +86,16 @@ make run ARG=scripts/complex.txt
 - angularVelocity (3次元ベクトル) : カメラの回転速度 (度/秒, 度数法)
 - fov (数値) : カメラの垂直視野角 (度数法)
 
-記述がない変数は場合は以下で初期化されます。
+### 変数の初期値
+
+記述がない変数は以下の値で初期化されます。
+
+- resource=("", "");
+- state
+  - time=1;
+  - position=(0, 0, 0);
+  - rotation=(0, 0, 0);
+  - scale=(1, 1, 1);
 
 - position=(5, 5, 5);
 - lookAt=(0, 0, 0);
