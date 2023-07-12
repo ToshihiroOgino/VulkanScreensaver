@@ -47,6 +47,7 @@ node{
                 state{
                     position=(2,0,0);
                     scale=(0.3,0.3,0.3);
+                    rotation=(0,0,180);
                 }
             }
         }
