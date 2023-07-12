@@ -29,9 +29,6 @@ void Screensaver::Node::addState(std::tuple<float, glm::vec3, glm::vec3, glm::ve
 }
 
 void Screensaver::Node::assignResourcePath(std::string &texturePath, std::string &modelPath) {
-  if (enableValidationLayers) {
-    std::cout << "texture:" << texturePath << ", model:" << modelPath << std::endl;
-  }
   if (texturePath.length() > 0) {
     this->pApp->numOfTextures += 1;
   }

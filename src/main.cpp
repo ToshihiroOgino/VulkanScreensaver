@@ -1,9 +1,7 @@
-#include "parser.h"
-#include "screensaver.h"
-
 #include <iostream>
 
-#define dump(x) std::cerr << #x << " = " << (x) << "\n"
+#include "parser.h"
+#include "screensaver.h"
 
 int main(int argc, char *argv[]) {
   Parser parser;
@@ -17,8 +15,6 @@ int main(int argc, char *argv[]) {
     return EXIT_FAILURE;
   }
   parser.apply(&app);
-
-  dump(app.rootNode->children.at(0)->cycle);
 
   try {
     app.run();
