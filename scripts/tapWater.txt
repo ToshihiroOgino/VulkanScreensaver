@@ -1,4 +1,9 @@
 node{
+    state{ scale=(-5,-5,-5); }
+    resource=("textures/checkerboard.jpg","models/cube_room.obj");
+}
+
+node{
     resource=("textures/tap.png","models/tap.obj");
     state{
         position=(0,0,0.5);
@@ -26,6 +31,7 @@ node{
         }
     }
 }
+
 camera{
     position=(2.0, 2.0, -1);
     lookAt=(0,0,0);

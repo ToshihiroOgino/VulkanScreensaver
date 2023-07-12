@@ -20,7 +20,7 @@ node{
                 rotation=(0,0,0);
             }
             state{
-                time=0.001;
+                time=0;
                 rotation=(-360,0,0);
             }
         }

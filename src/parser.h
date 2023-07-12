@@ -10,7 +10,7 @@
 class Parser {
 public:
   enum TokenType {
-    None,    // 不明
+    None,    // 未定義
     Str,     // 文字列
     Num,     // 数字
     Ope,     // 演算子

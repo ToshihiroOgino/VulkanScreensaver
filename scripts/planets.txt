@@ -13,7 +13,6 @@ node{
         time=0;
         rotation=(0,0,360);
     }
-
     node{
         node{
             resource=("textures/planets/2k_sun.jpg","models/sphere.obj");
