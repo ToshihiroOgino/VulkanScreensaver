@@ -1,5 +1,4 @@
 CPPCOMPILER = g++
-# CFLAGS    = -g -MMD -MP -Wall -Wextra -Winit-self -Wno-missing-field-initializers
 CFLAGS		= -g -rdynamic -std=c++20 -Wall -Wno-unknown-pragmas
 LDFLAGS		= -lglfw -lvulkan -ldl -lpthread -lX11 -lXxf86vm -lXrandr -lXi
 

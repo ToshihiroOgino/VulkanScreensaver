@@ -72,12 +72,22 @@ make run ARG=scripts/complex.txt
 
 ### node
 
-- resorce (文字列, 文字列) : モデルと画像のパスを指定する。
+- resource (文字列, 文字列) : モデルと画像のパスを指定する。
 - state : ノードの状態を定義する
   - time (数値) : 次の状態へ遷移するのにかかる秒数
   - position (3次元ベクトル) : ノードの座標
   - rotation (3次元ベクトル) : ノードの回転 (度数法)
   - scale (3次元ベクトル) : ノードの大きさ
+
+
+記述がない変数は場合は以下で初期化されます。
+
+- resource=("", "");
+- state
+  - time=1;
+  - position=(0, 0, 0);
+  - rotation=(0, 0, 0);
+  - scale=(1, 1, 1);
 
 ### camera
 
@@ -85,6 +95,13 @@ make run ARG=scripts/complex.txt
 - lookAt (3次元ベクトル) : カメラが向いている座標
 - angularVelocity (3次元ベクトル) : カメラの回転速度 (度/秒, 度数法)
 - fov (数値) : カメラの垂直視野角 (度数法)
+
+記述がない変数は場合は以下で初期化されます。
+
+- position=(5, 5, 5);
+- lookAt=(0, 0, 0);
+- angularVelocity=(0, 0, 0);
+- fov=60;
 
 ## 記述例
 
